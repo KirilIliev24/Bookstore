@@ -12,13 +12,15 @@ namespace Bookstore.Core
             _books = dbClient.GetBookCollection();
         }
 
-        public Book AddBook(Book book)
+        public async Task<Book> AddBook(Book book)
         {
-            _books.InsertOne(book);
+            await _books.InsertOneAsync(book);
             return book;
         }
 
-        public List<Book> GetBooks() => _books.Find(book => true).ToList();
+        public async Task<Book> GetBookByID(string id) => await _books.Find(book => book.Id == id).FirstAsync();
+
+        public async Task<List<Book>> GetBooks() => await _books.Find(book => true).ToListAsync();
         
     }
 }

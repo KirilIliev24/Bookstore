@@ -9,7 +9,8 @@ namespace Bookstore.Core
 {
     public interface IBookServices
     {
-        List<Book> GetBooks();
-        Book AddBook(Book book);
+        Task<List<Book>> GetBooks();
+        Task<Book> AddBook(Book book);
+        Task<Book> GetBookByID(string id);
     }
 }
