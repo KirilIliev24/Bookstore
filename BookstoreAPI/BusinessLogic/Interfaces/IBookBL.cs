@@ -1,5 +1,4 @@
-﻿using BookstoreAPI.APIReqResModels.RequestModels;
-using BookstoreAPI.APIReqResModels.ResponceModels;
+﻿using BookstoreAPI.APIReqResModels.Book;
 
 namespace BookstoreAPI.BusinessLogic.Interfaces
 {

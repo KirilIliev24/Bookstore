@@ -11,5 +11,6 @@ namespace Bookstore.Core
     public interface IDbClient
     {
         IMongoCollection<Book> GetBookCollection();
+        IMongoCollection<User> GetUserCollection();
     }
 }

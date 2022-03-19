@@ -13,6 +13,8 @@ builder.Services.AddMyServices();
 ConfigurationManager configuration = builder.Configuration;
 builder.Services.Configure<BookstoreDbConfig>(configuration);
 
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -21,6 +23,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.ConfigureExceptionHandler();
 
 app.UseHttpsRedirection();
 

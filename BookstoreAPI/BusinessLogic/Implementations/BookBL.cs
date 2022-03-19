@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
 using Bookstore.Core;
 using Bookstore.Core.Models;
-using BookstoreAPI.APIReqResModels.RequestModels;
-using BookstoreAPI.APIReqResModels.ResponceModels;
+using BookstoreAPI.APIReqResModels.Book;
 using BookstoreAPI.BusinessLogic.Interfaces;
 
 namespace BookstoreAPI.BusinessLogic.Implementations
@@ -20,7 +19,7 @@ namespace BookstoreAPI.BusinessLogic.Implementations
             var modelToSave = Mapper.Map<Book>(book);
             var dbbook = await _bookService.AddBook(modelToSave);
 
-            //use mapper to conver to book responce model
+            //use mapper to conver bookdb model to responce model
             var returnModel = Mapper.Map<BookResponceModel>(dbbook);
 
             return returnModel;

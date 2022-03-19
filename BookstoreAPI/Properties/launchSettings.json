@@ -18,7 +18,8 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DATABASE_NAME": "BookstoreDB",
-        "BOOKS_COLLECTION_NAME": "Books"
+        "BOOKS_COLLECTION_NAME": "Books",
+        "USERS_COLLECTION_NAME": "Users"
       }
     },
     "IIS Express": {
@@ -28,7 +29,8 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DATABASE_NAME": "BookstoreDB",
-        "BOOKS_COLLECTION_NAME": "Books"
+        "BOOKS_COLLECTION_NAME": "Books",
+        "USERS_COLLECTION_NAME": "Users"
       }
     }
   }

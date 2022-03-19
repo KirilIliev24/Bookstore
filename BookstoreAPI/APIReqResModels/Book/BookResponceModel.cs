@@ -1,16 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace BookstoreAPI.APIReqResModels.RequestModels
+﻿namespace BookstoreAPI.APIReqResModels.Book
 {
-    public class BookRequestModel
+    public class BookResponceModel
     {
-        [Required]
+        public string Id { get; set; } = null!;
         public string Name { get; set; } = null!;
-        [Required]
         public double Price { get; set; }
-        [Required]
         public string Category { get; set; } = null!;
-        [Required]
         public string Author { get; set; } = null!;
     }
 }
