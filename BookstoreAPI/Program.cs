@@ -10,8 +10,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMyServices();
-ConfigurationManager configuration = builder.Configuration;
-builder.Services.Configure<BookstoreDbConfig>(configuration);
+builder.Services.AddJWTConfig(builder.Configuration);
+
+//ConfigurationManager configuration = builder.Configuration;
+builder.Services.Configure<BookstoreDbConfig>(builder.Configuration);
 
 
 

@@ -2,6 +2,7 @@
 using Bookstore.Core.Services.UserServices;
 using BookstoreAPI.BusinessLogic.Implementations;
 using BookstoreAPI.BusinessLogic.Interfaces;
+using BookstoreAPI.JWT;
 
 namespace BookstoreAPI.Services
 {
@@ -20,7 +21,11 @@ namespace BookstoreAPI.Services
             
             //mapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            //JWT
+            services.AddSingleton<IJWTGenerator, JWTGenerator>();
             
+
             return services;
         }
     }

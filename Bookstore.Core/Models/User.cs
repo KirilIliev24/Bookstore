@@ -11,8 +11,6 @@ namespace Bookstore.Core.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
-        public string FirstName { get; set; } = String.Empty;
-        public string LastName { get; set; } = String.Empty;
         public string Username { get; set; } = String.Empty;
         public string HashPassword { get; set; } = String.Empty;
         [JsonConverter(typeof(StringEnumConverter))]  // JSON.Net

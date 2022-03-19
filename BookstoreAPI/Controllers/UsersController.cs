@@ -19,8 +19,8 @@ namespace BookstoreAPI.Controllers
         public async Task<ActionResult> Register(UserRequestModel user)
         {
            
-            var registerUser = await _userBL.AddUserAsync(user);
-            return registerUser == true ? StatusCode(StatusCodes.Status200OK, registerUser) : StatusCode(StatusCodes.Status400BadRequest, "Username not available");
+            var userToken = await _userBL.AddUserAsync(user);
+            return userToken != String.Empty ? StatusCode(StatusCodes.Status200OK, userToken) : StatusCode(StatusCodes.Status400BadRequest, "Username not available");
 
         }
 

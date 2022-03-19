@@ -3,6 +3,8 @@ using Bookstore.Core.Models;
 using Bookstore.Core.Services.UserServices;
 using BookstoreAPI.BusinessLogic.Interfaces;
 using BookstoreAPI.APIReqResModels.User;
+using BookstoreAPI.APIReqResModels.Book;
+using BookstoreAPI.JWT;
 
 namespace BookstoreAPI.BusinessLogic.Implementations
 {
@@ -10,32 +12,37 @@ namespace BookstoreAPI.BusinessLogic.Implementations
     {
 
         private readonly IUserService _userService;
-        public UserBL(IUserService userService, IMapper mapper) : base(mapper)
+        private readonly IJWTGenerator _jWTGenerator;
+        public UserBL(IUserService userService, IJWTGenerator jWTGenerator, IMapper mapper) : base(mapper)
         {
             _userService = userService;
+            _jWTGenerator = jWTGenerator;
         }
         //maybe use something else book model
-        public Task<bool> AddBookToFavoriteAsync(string username, Book book)
+        public async Task<bool> AddBookToFavoriteAsync(string username, Book book)
         {
             throw new NotImplementedException();
         }
 
         //later this will return token
-        public async Task<bool?> AddUserAsync(UserRequestModel user)
+        public async Task<string?> AddUserAsync(UserRequestModel user)
         {
             if (await _userService.DoesUsernameExists(user.Username))
             {
-                return false;
+                return String.Empty;
             }
             var userToSave = Mapper.Map<User>(user);
-            var userToReturn = await _userService.AddUserAsync(userToSave);
-            if (userToReturn is not null)
+            var userFromDB = await _userService.AddUserAsync(userToSave);
+            if (userFromDB is not null)
             {
-                return true;
+                var userToReturn = Mapper.Map<UserResponceModel>(userFromDB);
+                //generate token
+                var token = _jWTGenerator.GenerateJwt(userToReturn);
+                return token;
             }
             else 
             {
-                return false;
+                return String.Empty;
             }
             
         }
@@ -45,7 +52,12 @@ namespace BookstoreAPI.BusinessLogic.Implementations
             throw new NotImplementedException();
         }
 
-        public Task<UserResponceModel?> GetUserByUsernameAsync(string username)
+        public Task<List<BookResponceModel>> GetUserBooksAsync(string username)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string?> GetUserByUsernameAsync(string username)
         {
             throw new NotImplementedException();
         }
