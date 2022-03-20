@@ -10,9 +10,9 @@ namespace Bookstore.Core.Enums
     {
         public enum UserRole
         {
-            Admin,
-            Manager,
-            Basic
+            Admin = 0,
+            Manager = 1,
+            Basic = 2
         }
     }
 }

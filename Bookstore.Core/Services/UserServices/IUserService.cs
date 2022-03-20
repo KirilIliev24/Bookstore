@@ -16,5 +16,6 @@ namespace Bookstore.Core.Services.UserServices
         Task<bool> AddBookToFavoriteAsync(string userId, Book book);
         Task<bool> RemoveBookFromFavoriteAsync(string userId, string bookId);
         Task<bool> DoesUsernameExists(string username);
+        Task<bool> UpdateUserRoleAsync(string userId, string userRole);
     }
 }

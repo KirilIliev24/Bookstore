@@ -6,6 +6,8 @@ using BookstoreAPI.APIReqResModels.User;
 using BookstoreAPI.APIReqResModels.Book;
 using BookstoreAPI.JWT;
 using Bookstore.Core;
+using Bookstore.Core.Enums;
+
 
 namespace BookstoreAPI.BusinessLogic.Implementations
 {
@@ -83,6 +85,17 @@ namespace BookstoreAPI.BusinessLogic.Implementations
         public Task<string?> GetUserByUsernameAsync(string username)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<bool> UpdateUserRoleAsync(string userId, string userRole)
+        {
+            var enumCheck = Enum.IsDefined(typeof(Enums.UserRole), userRole);
+            if(enumCheck is true)
+            {
+                var result = await _userService.UpdateUserRoleAsync(userId, userRole);
+                return result;
+            }
+            return false;
         }
     }
 }

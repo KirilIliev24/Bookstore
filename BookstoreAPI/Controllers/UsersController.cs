@@ -1,5 +1,7 @@
-﻿using BookstoreAPI.APIReqResModels.User;
+﻿using Bookstore.Core.Enums;
+using BookstoreAPI.APIReqResModels.User;
 using BookstoreAPI.BusinessLogic.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -46,11 +48,12 @@ namespace BookstoreAPI.Controllers
             return Ok();
         }
 
-        [HttpPatch(nameof(Update))]
-        //admin
-        public async Task<ActionResult> Update(int userId, string userType)
+        [HttpPatch(nameof(UpdateUserRole))]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> UpdateUserRole(string userId, string userRole)
         {
-            return Ok();
+            var isUpdated = await _userBL.UpdateUserRoleAsync(userId, userRole);
+            return isUpdated? StatusCode(StatusCodes.Status200OK, isUpdated) : StatusCode(StatusCodes.Status400BadRequest, "User role or user is not valid");
         }
 
         [HttpPut(nameof(AddBookToUser))]

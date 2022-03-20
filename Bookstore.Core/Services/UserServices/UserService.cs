@@ -78,5 +78,14 @@ namespace Bookstore.Core.Services.UserServices
             return user.FavoriteBooks.ToList();
             
         }
+
+        public async Task<bool> UpdateUserRoleAsync(string userId, string userRole)
+        {
+            var filter = Builders<User>.Filter.Eq<string>(u => u.Id, userId);            
+            var update = Builders<User>.Update.Set("Role", userRole);
+            var result = await _users.FindOneAndUpdateAsync(filter, update);
+
+            return result is not null;
+        }
     }
 }
