@@ -9,7 +9,9 @@ namespace BookstoreAPI.BusinessLogic.Interfaces
         Task<List<UserResponceModel>> GetAllUsersAsync();
         Task<string?> AddUserAsync(UserRequestModel user);
         Task<string?> GetUserByUsernameAsync(string username);
-        Task<List<BookResponceModel>> GetUserBooksAsync(string username);
-        Task<bool> AddBookToFavoriteAsync(string username, Book book);
+        Task<List<BookResponceModel>> GetUserBooksAsync(string userId);
+        Task<bool> AddBookToFavoriteAsync(string userId, string bookId);
+        Task<bool> RemoveBookFromFavoriteAsync(string userId, string bookId);
+
     }
 }

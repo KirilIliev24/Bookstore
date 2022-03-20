@@ -28,9 +28,9 @@ namespace BookstoreAPI.JWT
                 new Claim(ClaimTypes.Name, user.Username),
             };
 
-            var isAdmin = user.Role.ToString().Contains(Enums.UserRole.Admin.ToString());
-            var isManager = user.Role.ToString().Contains(Enums.UserRole.Manager.ToString());
-            var isBasic = user.Role.ToString().Contains(Enums.UserRole.Basic.ToString());
+            var isAdmin = user.Role.Contains(Enums.UserRole.Admin.ToString());
+            var isManager = user.Role.Contains(Enums.UserRole.Manager.ToString());
+            var isBasic = user.Role.Contains(Enums.UserRole.Basic.ToString());
 
             if (isAdmin)
             {

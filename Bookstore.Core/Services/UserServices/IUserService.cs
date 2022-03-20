@@ -12,7 +12,9 @@ namespace Bookstore.Core.Services.UserServices
         Task<List<User>> GetAllUsersAsync();
         Task<User?> AddUserAsync(User user);
         Task<User> GetUserByUsernameAsync(string username);
-        Task<bool> AddBookToFavoriteAsync(string username, Book book);
+        Task<List<Book>> GetUserBooksAsync(string userId);
+        Task<bool> AddBookToFavoriteAsync(string userId, Book book);
+        Task<bool> RemoveBookFromFavoriteAsync(string userId, string bookId);
         Task<bool> DoesUsernameExists(string username);
     }
 }

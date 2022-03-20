@@ -5,6 +5,7 @@ using BookstoreAPI.BusinessLogic.Interfaces;
 using BookstoreAPI.APIReqResModels.User;
 using BookstoreAPI.APIReqResModels.Book;
 using BookstoreAPI.JWT;
+using Bookstore.Core;
 
 namespace BookstoreAPI.BusinessLogic.Implementations
 {
@@ -12,16 +13,26 @@ namespace BookstoreAPI.BusinessLogic.Implementations
     {
 
         private readonly IUserService _userService;
+        private readonly IBookServices _bookServices;
         private readonly IJWTGenerator _jWTGenerator;
-        public UserBL(IUserService userService, IJWTGenerator jWTGenerator, IMapper mapper) : base(mapper)
+        public UserBL(IUserService userService, IBookServices bookServices, IJWTGenerator jWTGenerator, IMapper mapper) : base(mapper)
         {
             _userService = userService;
             _jWTGenerator = jWTGenerator;
+            _bookServices = bookServices;
         }
         //maybe use something else book model
-        public async Task<bool> AddBookToFavoriteAsync(string username, Book book)
+        public async Task<bool> AddBookToFavoriteAsync(string userId, string bookId)
         {
-            throw new NotImplementedException();
+            var bookToAdd = await _bookServices.GetBookByID(bookId);
+            var isSaved = await _userService.AddBookToFavoriteAsync(userId, bookToAdd);
+            return isSaved;
+        }
+
+        public async Task<bool> RemoveBookFromFavoriteAsync(string userId, string bookId)
+        {
+            var isRemoved = await _userService.RemoveBookFromFavoriteAsync(userId, bookId);
+            return isRemoved;
         }
 
         //later this will return token
@@ -47,14 +58,26 @@ namespace BookstoreAPI.BusinessLogic.Implementations
             
         }
 
-        public Task<List<UserResponceModel>> GetAllUsersAsync()
+        public async Task<List<UserResponceModel>> GetAllUsersAsync()
         {
-            throw new NotImplementedException();
+            var users = await _userService.GetAllUsersAsync();
+            if (users is not null || users.Any() == true)
+            {
+                var usersToReturn = Mapper.Map<List<UserResponceModel>>(users);
+                return usersToReturn;
+            }
+            return new List<UserResponceModel>();
         }
 
-        public Task<List<BookResponceModel>> GetUserBooksAsync(string username)
+        public async Task<List<BookResponceModel>> GetUserBooksAsync(string userId)
         {
-            throw new NotImplementedException();
+            var booksFromDb = await _userService.GetUserBooksAsync(userId);
+            if (booksFromDb is not null || booksFromDb.Any() == true)
+            {
+                return Mapper.Map<List<BookResponceModel>>(booksFromDb);
+            }
+            return new List<BookResponceModel>();
+
         }
 
         public Task<string?> GetUserByUsernameAsync(string username)

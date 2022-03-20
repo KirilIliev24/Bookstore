@@ -18,12 +18,6 @@ namespace Bookstore.Core.Services.UserServices
             
         }
 
-        //private async Task CreateIndexDefinitions()
-        //{
-        //    var indexKeysDefinition = Builders<User>.IndexKeys.Ascending(u => u.Username);
-        //    await _users.Indexes.CreateOneAsync(new CreateIndexModel<User>(indexKeysDefinition));
-        //}
-
         public async Task<User?> AddUserAsync(User user)
         {
             try
@@ -45,13 +39,26 @@ namespace Bookstore.Core.Services.UserServices
             return await _users.Find(u => u.Username == username).FirstAsync();
         }
 
-        public async Task<bool> AddBookToFavoriteAsync(string username, Book book)
+        public async Task<bool> AddBookToFavoriteAsync(string userId, Book book)
         {
             var filter = Builders<User>
-             .Filter.Eq(e => e.Username, username);
+             .Filter.Eq(e => e.Id, userId);
 
             var update = Builders<User>.Update
                     .Push<Book>(e => e.FavoriteBooks, book);
+
+            var done = await _users.FindOneAndUpdateAsync(filter, update);
+            return done is not null;
+        }
+
+        public async Task<bool> RemoveBookFromFavoriteAsync(string userId, string bookId)
+        {
+            var filter = Builders<User>
+             .Filter.Eq(e => e.Id, userId);
+
+            var update = Builders<User>.Update
+                    .PullFilter<Book>(e => e.FavoriteBooks,
+                        Builders<Book>.Filter.Eq(b => b.Id, bookId));
 
             var done = await _users.FindOneAndUpdateAsync(filter, update);
             return done is not null;
@@ -62,6 +69,14 @@ namespace Bookstore.Core.Services.UserServices
             var filter = Builders<User>.Filter.Eq<string>(u => u.Username, username);
             var exsists = await _users.Find(filter).FirstOrDefaultAsync();
             return exsists is not null;
+        }
+
+        public async Task<List<Book>> GetUserBooksAsync(string userId)
+        {
+            var filter = Builders<User>.Filter.Eq<string>(u => u.Id, userId);
+            var user = await _users.Find(filter).FirstOrDefaultAsync();
+            return user.FavoriteBooks.ToList();
+            
         }
     }
 }

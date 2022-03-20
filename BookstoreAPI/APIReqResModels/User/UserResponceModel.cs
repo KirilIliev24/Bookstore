@@ -9,7 +9,6 @@ namespace BookstoreAPI.APIReqResModels.User
     {
         public string? Id { get; set; }
         public string Username { get; set; }
-        public Enum Role { get; set; }
-        public IEnumerable<Book> FavoriteBooks { get; set; } = new List<Book>();
+        public string Role { get; set; }
     }
 }
