@@ -18,9 +18,14 @@ namespace Bookstore.Core
             return book;
         }
 
-        public async Task<Book> GetBookByID(string id) => await _books.Find(book => book.Id == id).FirstAsync();
+        public async Task<Book> GetBookByID(string id) => await _books.Find(book => book.Id == id).FirstOrDefaultAsync();
 
         public async Task<List<Book>> GetBooks() => await _books.Find(book => true).ToListAsync();
-        
+
+        public async Task<bool> DeleteByIdAsync(string id)
+        {
+            var isDeleted = await _books.DeleteOneAsync(b => b.Id == id);
+            return isDeleted.IsAcknowledged;
+        }
     }
 }

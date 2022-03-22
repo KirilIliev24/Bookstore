@@ -20,8 +20,6 @@ namespace Bookstore.Core
             var database = client.GetDatabase(bookstoreDbConfig.Value.Database_Name);
             _books = database.GetCollection<Book>(bookstoreDbConfig.Value.Books_Collection_Name);
             _users = database.GetCollection<User>(bookstoreDbConfig.Value.Users_Collection_Name);
-            //var indexKeysDefinition = Builders<User>.IndexKeys.Ascending(u => u.Username);
-            //await _users.Indexes.CreateOneAsync(new CreateIndexModel<User>(indexKeysDefinition));
         }
 
 

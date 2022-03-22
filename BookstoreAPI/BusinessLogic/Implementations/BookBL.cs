@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Bookstore.Core;
 using Bookstore.Core.Models;
+using Bookstore.Core.Services.UserServices;
 using BookstoreAPI.APIReqResModels.Book;
 using BookstoreAPI.BusinessLogic.Interfaces;
 
@@ -9,9 +10,11 @@ namespace BookstoreAPI.BusinessLogic.Implementations
     public class BookBL : BaseBL<BookBL>, IBookBL
     {
         private readonly IBookServices _bookService;
-        public BookBL(IBookServices bookServices, IMapper mapper) : base(mapper)
+        private readonly IUserService _userService;
+        public BookBL(IBookServices bookServices, IMapper mapper, IUserService userService) : base(mapper)
         {
             _bookService = bookServices;
+            _userService = userService;
         }
         public async Task<BookResponceModel> AddBook(BookRequestModel book)
         {
@@ -21,8 +24,18 @@ namespace BookstoreAPI.BusinessLogic.Implementations
 
             //use mapper to conver bookdb model to responce model
             var returnModel = Mapper.Map<BookResponceModel>(dbbook);
-
             return returnModel;
+        }
+
+        public async Task<bool> DeleteByIDAsync(string id)
+        {
+            var isDeleted = await _bookService.DeleteByIdAsync(id);
+            if(isDeleted == true)
+            {
+                var isSuccessful = await _userService.RemoveFromEveryoneAsync(id);
+                return isSuccessful;
+            }
+            return false;
         }
 
         public async Task<BookResponceModel> GetBookByID(string id)

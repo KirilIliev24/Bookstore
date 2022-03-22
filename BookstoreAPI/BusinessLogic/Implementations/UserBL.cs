@@ -38,7 +38,7 @@ namespace BookstoreAPI.BusinessLogic.Implementations
         }
 
         //later this will return token
-        public async Task<string?> AddUserAsync(UserRequestModel user)
+        public async Task<string> AddUserAsync(UserRequestModel user)
         {
             if (await _userService.DoesUsernameExists(user.Username))
             {
@@ -60,9 +60,9 @@ namespace BookstoreAPI.BusinessLogic.Implementations
             
         }
 
-        public async Task<List<UserResponceModel>> GetAllUsersAsync()
+        public async Task<List<UserResponceModel>> GetAllUsersAsync(CancellationToken cancellationToken)
         {
-            var users = await _userService.GetAllUsersAsync();
+            var users = await _userService.GetAllUsersAsync(cancellationToken);
             if (users is not null || users.Any() == true)
             {
                 var usersToReturn = Mapper.Map<List<UserResponceModel>>(users);
@@ -82,9 +82,20 @@ namespace BookstoreAPI.BusinessLogic.Implementations
 
         }
 
-        public Task<string?> GetUserByUsernameAsync(string username)
+        public async Task<string> GetUserByUsernameAndPassAsync(string username, string password)
         {
-            throw new NotImplementedException();
+            var user = await _userService.GetUserByUsernameAndPassAsync(username, password);
+            if (user is not null)
+            {
+                var userToReturn = Mapper.Map<UserResponceModel>(user);
+                //generate token
+                var token = _jWTGenerator.GenerateJwt(userToReturn);
+                return token;
+            }
+            else 
+            {
+                return String.Empty;
+            }
         }
 
         public async Task<bool> UpdateUserRoleAsync(string userId, string userRole)

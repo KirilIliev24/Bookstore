@@ -32,11 +32,11 @@ namespace Bookstore.Core.Services.UserServices
            
         }
 
-        public async Task<List<User>> GetAllUsersAsync() => await _users.Find(u => true).ToListAsync();
+        public async Task<List<User>> GetAllUsersAsync(CancellationToken cancellationToken) => await _users.Find(u => true).ToListAsync(cancellationToken);
 
-        public async Task<User> GetUserByUsernameAsync(string username)
+        public async Task<User> GetUserByUsernameAndPassAsync(string username, string password)
         {
-            return await _users.Find(u => u.Username == username).FirstAsync();
+            return await _users.Find(u => u.Username == username && u.HashPassword == password).FirstOrDefaultAsync();
         }
 
         public async Task<bool> AddBookToFavoriteAsync(string userId, Book book)
@@ -86,6 +86,18 @@ namespace Bookstore.Core.Services.UserServices
             var result = await _users.FindOneAndUpdateAsync(filter, update);
 
             return result is not null;
+        }
+
+        public async Task<bool> RemoveFromEveryoneAsync(string bookId)
+        {
+            var filter = Builders<User>.Filter.Empty;
+
+            var update = Builders<User>.Update
+                    .PullFilter<Book>(e => e.FavoriteBooks,
+                        Builders<Book>.Filter.Eq(b => b.Id, bookId));
+
+            var done = await _users.UpdateManyAsync(filter, update);
+            return done is not null;
         }
     }
 }

@@ -2,6 +2,7 @@ using Bookstore.Core;
 using Bookstore.Core.Models;
 using BookstoreAPI.APIReqResModels.Book;
 using BookstoreAPI.BusinessLogic.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookstoreAPI.Controllers
@@ -20,21 +21,40 @@ namespace BookstoreAPI.Controllers
         public async Task<IActionResult> GetBooks()
         {
             var books = await _bookBL.GetBooks();
-            return books != null ? StatusCode(StatusCodes.Status200OK, books) : StatusCode(StatusCodes.Status400BadRequest);
+            return books != null ? StatusCode(StatusCodes.Status200OK, books) : StatusCode(StatusCodes.Status400BadRequest, "Could not get books");
         }
 
         [HttpPost(nameof(AddBook))]
+        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> AddBook([FromBody] BookRequestModel book)
         {
             var responce = await _bookBL.AddBook(book);
-            return responce != null ? StatusCode(StatusCodes.Status200OK, responce) : StatusCode(StatusCodes.Status400BadRequest);
+            return responce != null ? StatusCode(StatusCodes.Status200OK, responce) : StatusCode(StatusCodes.Status400BadRequest, "Problems with adding book");
+        }
+
+        [HttpDelete(nameof(DeleteBookById))]
+        //[Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Manager")]
+        public async Task<IActionResult> DeleteBookById([FromQuery] string bookId)
+        {
+            var isDeleted = await _bookBL.DeleteByIDAsync(bookId);
+            return Ok(isDeleted);
+        }
+
+        [HttpPut(nameof(UpdateBookById))]
+        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Manager")]
+        public async Task<IActionResult> UpdateBookById([FromBody] BookRequestModel newModel)
+        {
+            throw new NotImplementedException();
         }
 
         [HttpGet(nameof(GetBookById))]
         public async Task<IActionResult> GetBookById([FromQuery] string id)
         {
             var books = await _bookBL.GetBookByID(id);
-            return books != null ? StatusCode(StatusCodes.Status200OK, books) : StatusCode(StatusCodes.Status400BadRequest);
+            return books != null ? StatusCode(StatusCodes.Status200OK, books) : StatusCode(StatusCodes.Status400BadRequest, "No books where found");
         }
     }
 }

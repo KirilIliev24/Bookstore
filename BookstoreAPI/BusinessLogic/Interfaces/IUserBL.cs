@@ -6,9 +6,9 @@ namespace BookstoreAPI.BusinessLogic.Interfaces
 {
     public interface IUserBL
     {
-        Task<List<UserResponceModel>> GetAllUsersAsync();
-        Task<string?> AddUserAsync(UserRequestModel user);
-        Task<string?> GetUserByUsernameAsync(string username);
+        Task<List<UserResponceModel>> GetAllUsersAsync(CancellationToken cancellationToken);
+        Task<string> AddUserAsync(UserRequestModel user);
+        Task<string> GetUserByUsernameAndPassAsync(string username, string password);
         Task<List<BookResponceModel>> GetUserBooksAsync(string userId);
         Task<bool> AddBookToFavoriteAsync(string userId, string bookId);
         Task<bool> RemoveBookFromFavoriteAsync(string userId, string bookId);
