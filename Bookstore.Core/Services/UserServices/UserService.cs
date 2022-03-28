@@ -39,13 +39,13 @@ namespace Bookstore.Core.Services.UserServices
             return await _users.Find(u => u.Username == username && u.HashPassword == password).FirstOrDefaultAsync();
         }
 
-        public async Task<bool> AddBookToFavoriteAsync(string userId, Book book)
+        public async Task<bool> AddBookToFavoriteAsync(string userId, string bookId)
         {
             var filter = Builders<User>
              .Filter.Eq(e => e.Id, userId);
 
             var update = Builders<User>.Update
-                    .Push<Book>(e => e.FavoriteBooks, book);
+                    .Push<string>(e => e.FavoriteBooks, bookId);
 
             var done = await _users.FindOneAndUpdateAsync(filter, update);
             return done is not null;
@@ -56,9 +56,7 @@ namespace Bookstore.Core.Services.UserServices
             var filter = Builders<User>
              .Filter.Eq(e => e.Id, userId);
 
-            var update = Builders<User>.Update
-                    .PullFilter<Book>(e => e.FavoriteBooks,
-                        Builders<Book>.Filter.Eq(b => b.Id, bookId));
+            var update = Builders<User>.Update.Pull(x => x.FavoriteBooks, bookId);
 
             var done = await _users.FindOneAndUpdateAsync(filter, update);
             return done is not null;
@@ -71,7 +69,7 @@ namespace Bookstore.Core.Services.UserServices
             return exsists is not null;
         }
 
-        public async Task<List<Book>> GetUserBooksAsync(string userId)
+        public async Task<List<string>> GetUserBooksAsync(string userId)
         {
             var filter = Builders<User>.Filter.Eq<string>(u => u.Id, userId);
             var user = await _users.Find(filter).FirstOrDefaultAsync();
@@ -92,9 +90,7 @@ namespace Bookstore.Core.Services.UserServices
         {
             var filter = Builders<User>.Filter.Empty;
 
-            var update = Builders<User>.Update
-                    .PullFilter<Book>(e => e.FavoriteBooks,
-                        Builders<Book>.Filter.Eq(b => b.Id, bookId));
+            var update = Builders<User>.Update.Pull(x => x.FavoriteBooks, bookId);
 
             var done = await _users.UpdateManyAsync(filter, update);
             return done is not null;

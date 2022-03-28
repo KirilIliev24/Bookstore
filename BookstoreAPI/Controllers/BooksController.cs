@@ -25,8 +25,7 @@ namespace BookstoreAPI.Controllers
         }
 
         [HttpPost(nameof(AddBook))]
-        [Authorize(Roles = "Admin")]
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> AddBook([FromBody] BookRequestModel book)
         {
             var responce = await _bookBL.AddBook(book);
@@ -34,8 +33,7 @@ namespace BookstoreAPI.Controllers
         }
 
         [HttpDelete(nameof(DeleteBookById))]
-        //[Authorize(Roles = "Admin")]
-        //[Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> DeleteBookById([FromQuery] string bookId)
         {
             var isDeleted = await _bookBL.DeleteByIDAsync(bookId);
@@ -43,11 +41,11 @@ namespace BookstoreAPI.Controllers
         }
 
         [HttpPut(nameof(UpdateBookById))]
-        [Authorize(Roles = "Admin")]
-        [Authorize(Roles = "Manager")]
-        public async Task<IActionResult> UpdateBookById([FromBody] BookRequestModel newModel)
+        [Authorize(Roles = "Manager, Admin")]
+        public async Task<IActionResult> UpdateBookById([FromBody] BookRequestModel newModel, [FromRoute] string bookId)
         {
-            throw new NotImplementedException();
+            var updatedBook = await _bookBL.UpdayteByIDAsync(newModel, bookId);
+            return updatedBook is not null ? StatusCode(StatusCodes.Status200OK, updatedBook) : StatusCode(StatusCodes.Status400BadRequest, "Problems with updating the book");
         }
 
         [HttpGet(nameof(GetBookById))]

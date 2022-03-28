@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BookstoreAPI.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class UsersController : Controller
     {
         private readonly IUserBL _userBL;
@@ -24,6 +26,7 @@ namespace BookstoreAPI.Controllers
         }
         
         [HttpGet(nameof(GetUserBooks))]
+        [Authorize(Roles = "Basic, Manager, Admin")]
         public async Task<ActionResult> GetUserBooks([FromQuery] string userId)
         {
             var books = await _userBL.GetUserBooksAsync(userId);
@@ -42,7 +45,7 @@ namespace BookstoreAPI.Controllers
         public async Task<ActionResult> Login(string username, string hashPassword)
         {
             var userToken = await _userBL.GetUserByUsernameAndPassAsync(username, hashPassword);
-            return userToken != String.Empty? StatusCode(StatusCodes.Status200OK, userToken) : StatusCode(StatusCodes.Status400BadRequest, "Username or password are wrong");
+            return userToken != String.Empty? StatusCode(StatusCodes.Status200OK, userToken) : StatusCode(StatusCodes.Status400BadRequest, "Invalid credentials");
         }
 
         [HttpPatch(nameof(UpdateUserRole))]
@@ -54,6 +57,7 @@ namespace BookstoreAPI.Controllers
         }
 
         [HttpPut(nameof(AddBookToUser))]
+        [Authorize(Roles = "Basic, Manager, Admin")]
         public async Task<ActionResult> AddBookToUser(string userId, string bookId)
         {
             var isSaved = await _userBL.AddBookToFavoriteAsync(userId, bookId);
@@ -61,6 +65,7 @@ namespace BookstoreAPI.Controllers
         }
 
         [HttpPut(nameof(RemoveBookFromUser))]
+        [Authorize(Roles = "Basic, Manager, Admin")]
         public async Task<ActionResult> RemoveBookFromUser(string userId, string bookId)
         {
             var isRemoved = await _userBL.RemoveBookFromFavoriteAsync(userId, bookId);

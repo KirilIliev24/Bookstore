@@ -1,5 +1,6 @@
 using Bookstore.Core;
 using BookstoreAPI.Services;
+using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -12,15 +13,31 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => 
 {
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    options.AddSecurityDefinition("token", new OpenApiSecurityScheme
     {
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
+        Name = HeaderNames.Authorization,
+        Type = SecuritySchemeType.Http,
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
         Description = "JWT Authorization header using the Bearer scheme."
     });
+    options.AddSecurityRequirement(
+            new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "token"
+                        },
+                    },
+                    Array.Empty<string>()
+                }
+            }
+        );
 });
 builder.Services.AddMyServices();
 builder.Services.AddJWTConfig(builder.Configuration);
@@ -28,7 +45,7 @@ builder.Services.AddJWTConfig(builder.Configuration);
 //ConfigurationManager configuration = builder.Configuration;
 builder.Services.Configure<BookstoreDbConfig>(builder.Configuration);
 
-
+builder.Services.AddCors();
 
 var app = builder.Build();
 
@@ -41,7 +58,11 @@ if (app.Environment.IsDevelopment())
 app.ConfigureExceptionHandler();
 
 app.UseHttpsRedirection();
-
+app.UseCors(options => options
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

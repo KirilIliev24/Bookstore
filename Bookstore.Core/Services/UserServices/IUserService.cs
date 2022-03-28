@@ -12,8 +12,8 @@ namespace Bookstore.Core.Services.UserServices
         Task<List<User>> GetAllUsersAsync(CancellationToken cancellationToken);
         Task<User?> AddUserAsync(User user);
         Task<User> GetUserByUsernameAndPassAsync(string username, string password);
-        Task<List<Book>> GetUserBooksAsync(string userId);
-        Task<bool> AddBookToFavoriteAsync(string userId, Book book);
+        Task<List<string>> GetUserBooksAsync(string userId);
+        Task<bool> AddBookToFavoriteAsync(string userId, string bookId);
         Task<bool> RemoveBookFromFavoriteAsync(string userId, string bookId);
         Task<bool> RemoveFromEveryoneAsync(string bookId);
         Task<bool> DoesUsernameExists(string username);

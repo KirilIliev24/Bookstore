@@ -55,5 +55,18 @@ namespace BookstoreAPI.BusinessLogic.Implementations
             return new List<BookResponceModel>();
             
         }
+
+        public async Task<BookResponceModel> UpdayteByIDAsync(BookRequestModel newBook, string id)
+        {
+            var newBookDbModel = Mapper.Map<Book>(newBook);
+            newBookDbModel.Id = id;
+
+            var result = await _bookService.UpdateByIdAsync(newBookDbModel, id);
+            if (result is not null)
+            {
+                return Mapper.Map<BookResponceModel>(result);
+            }
+            return null;
+        }
     }
 }

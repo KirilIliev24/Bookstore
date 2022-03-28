@@ -23,12 +23,15 @@ namespace BookstoreAPI.BusinessLogic.Implementations
             _jWTGenerator = jWTGenerator;
             _bookServices = bookServices;
         }
-        //maybe use something else book model
         public async Task<bool> AddBookToFavoriteAsync(string userId, string bookId)
         {
-            var bookToAdd = await _bookServices.GetBookByID(bookId);
-            var isSaved = await _userService.AddBookToFavoriteAsync(userId, bookToAdd);
-            return isSaved;
+            var isBookValid = await _bookServices.DoesIdExsistsAsync(bookId);
+            if(isBookValid == true)
+            {
+                var isSaved = await _userService.AddBookToFavoriteAsync(userId, bookId);
+                return isSaved;
+            }
+            return false;
         }
 
         public async Task<bool> RemoveBookFromFavoriteAsync(string userId, string bookId)
@@ -37,7 +40,6 @@ namespace BookstoreAPI.BusinessLogic.Implementations
             return isRemoved;
         }
 
-        //later this will return token
         public async Task<string> AddUserAsync(UserRequestModel user)
         {
             if (await _userService.DoesUsernameExists(user.Username))
@@ -73,10 +75,19 @@ namespace BookstoreAPI.BusinessLogic.Implementations
 
         public async Task<List<BookResponceModel>> GetUserBooksAsync(string userId)
         {
-            var booksFromDb = await _userService.GetUserBooksAsync(userId);
-            if (booksFromDb is not null || booksFromDb.Any() == true)
+            var booksFromDB = new List<Book>();
+            var idsFromDb = await _userService.GetUserBooksAsync(userId);
+            if (idsFromDb is not null || idsFromDb.Any() == true)
             {
-                return Mapper.Map<List<BookResponceModel>>(booksFromDb);
+                foreach (var id in idsFromDb)
+                {
+                    var exsists = await _bookServices.GetBookByID(id);
+                    if (exsists is not null)
+                    {
+                        booksFromDB.Add(exsists);
+                    }
+                }
+                return Mapper.Map<List<BookResponceModel>>(booksFromDB);
             }
             return new List<BookResponceModel>();
 

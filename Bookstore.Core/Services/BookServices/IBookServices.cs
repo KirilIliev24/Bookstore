@@ -13,5 +13,7 @@ namespace Bookstore.Core
         Task<Book> AddBook(Book book);
         Task<Book> GetBookByID(string id);
         Task<bool> DeleteByIdAsync(string id);
+        Task<Book> UpdateByIdAsync(Book newBook, string id);
+        Task<bool> DoesIdExsistsAsync(string id);
     }
 }

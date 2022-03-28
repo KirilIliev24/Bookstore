@@ -16,6 +16,6 @@ namespace Bookstore.Core.Models
         [JsonConverter(typeof(StringEnumConverter))]  // JSON.Net
         [BsonRepresentation(BsonType.String)]         // Mongo
         public UserRole Role { get; set; } = UserRole.Basic;
-        public IEnumerable<Book> FavoriteBooks { get; set; } = new List<Book>();
+        public IEnumerable<string> FavoriteBooks { get; set; } = new List<string>();
     }
 }
